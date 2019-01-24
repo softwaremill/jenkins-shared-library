@@ -55,7 +55,7 @@ def build(Map params){
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
       """
 
-      def command = /java -Dsbt.global.base=\/root\/.sbt -Dsbt.boot.directory=\/root\/.sbt -Dsbt.ivy.home=\/root\/cache\/ivy2 -Dsbt.log.noformat=true -jar $sbtHome\/bin\/sbt-launch.jar  ";set pgpPassphrase := Some(Array($PASS)); release with-defaults release-version ${params.RELEASE_VERSION} next-version ${params.NEXT_VERSION}-SNAPSHOT"/
+      def command = /java -Dsbt.global.base=\/root\/.sbt -Dsbt.boot.directory=\/root\/.sbt -Dsbt.ivy.home=\/root\/cache\/ivy2 -Dsbt.log.noformat=true -jar ${params.sbtHome}\/bin\/sbt-launch.jar  ";set pgpPassphrase := Some(Array($PASS)); release with-defaults release-version ${params.RELEASE_VERSION} next-version ${params.NEXT_VERSION}-SNAPSHOT"/
       sh command
 
 }
