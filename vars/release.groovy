@@ -1,4 +1,4 @@
-def setProperties(Map params) {
+def setProps() {
     properties([
         parameters([
             string(defaultValue: '', description: 'Release version', name: 'RELEASE_VERSION', trim: false),
@@ -28,7 +28,7 @@ def publishCache(Map params) {
     }
 }
 
-def checkout(Map params){
+def clone(Map params){
     checkout([
             $class: 'GitSCM',
             branches: [[name: '*/master']],
