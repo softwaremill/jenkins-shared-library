@@ -1,6 +1,5 @@
 def call(Map notifyParams) {
     //String buildStatus, String slackChannel, String slackTeam, String slackTokenCredentialId
-
     buildStatus = notifyParams.buildStatus ?: 'SUCCESS'
     def msg = "${buildStatus}: Job: ${env.JOB_NAME} Build: ${env.BUILD_DISPLAY_NAME} (${env.BUILD_URL})"
 
@@ -19,4 +18,5 @@ def call(Map notifyParams) {
                 message: msg,
                 tokenCredentialId: notifyParams.slackTokenCredentialId,
                 channel: notifyParams.slackChannel
+		includeTestSummary: notifyParams.testSumary ?: 'false'
 }
