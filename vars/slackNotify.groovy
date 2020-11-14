@@ -1,22 +1,42 @@
-def call(Map notifyParams) {
-    //String buildStatus, String slackChannel, String slackTeam, String slackTokenCredentialId
-    buildStatus = notifyParams.buildStatus ?: 'SUCCESS'
-    def msg = "${buildStatus}: Job: ${env.JOB_NAME} Build: ${env.BUILD_DISPLAY_NAME} (${env.BUILD_URL})"
+import groovy.transform.Field
 
-    if (notifyParams.buildStatus == 'STARTED') {
-        color = 'YELLOW'
-        colorCode = '#FFFF00'
-    } else if (notifyParams.buildStatus == 'SUCCESS') {
-        color = 'GREEN'
-        colorCode = '#00FF00'
-    } else {
-        color = 'RED'
-        colorCode = '#FF0000'
+@Field
+private def MSG_COLOR_MAP = [
+  'STARTED': 'warning',
+  'SUCCESS': 'good',
+  'FAILURE': 'danger',
+  'ABORTED': '#696969'
+]
+
+private def constructMsgBody(Map msgParams) {
+  def msg = "*${msgParams.buildStatus}:* Job '${msgParams.jobName}' Build ${msgParams.buildName}"
+  if(msgParams.containsKey("buildUser")) {
+    msg += "\n User: ${msgParams.buildUser}"
+  }
+  msg += "\n More info at: ${msgParams.buildUrl}"
+  return msg
+}
+
+def call(Map notifyParams) {
+    def buildStatus = notifyParams.buildStatus ?: 'SUCCESS'
+
+    def buildUser
+    wrap([$class: 'BuildUser']) {
+      buildUser = notifyParams.buildUser ?: BUILD_USER
     }
-    slackSend   color: colorCode,
-                teamDomain: notifyParams.slackTeam,
-                message: msg,
-                tokenCredentialId: notifyParams.slackTokenCredentialId,
-                channel: notifyParams.slackChannel
-		includeTestSummary: notifyParams.testSumary ?: 'false'
+
+    def msgBody = constructMsgBody(buildStatus: notifyParams.buildStatus,
+                                        jobName: env.JOB_NAME,
+                                        buildName: env.BUILD_DISPLAY_NAME,
+                                        buildUser: buildUser,
+                                        buildUrl: env.BUILD_URL)
+
+    def msgColor = MSG_COLOR_MAP[buildStatus]
+
+    slackSend(color: msgColor,
+              teamDomain: notifyParams.slackTeam,
+              message: msgBody,
+              tokenCredentialId: notifyParams.slackTokenCredentialId,
+              channel: notifyParams.slackChannel,
+              botUser: notifyParams.botUser ?: 'false')
 }
