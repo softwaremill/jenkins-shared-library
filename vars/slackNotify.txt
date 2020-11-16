@@ -1,20 +1,21 @@
-*slackNotify* sends notifications to specified Slack channel.
+<b>slackNotify</b> sends notifications to specified Slack channel.
 
-Params:
- * String buildStatus (required)
- * String slackChannel (required)
- * String slackTeam (required)
- * String slackTokenCredentialId (required)
- * String buildUser (optional - taken from environment variables otherwise, requires "build user vars" Jenkins plugin installed in such case, i.e. https://plugins.jenkins.io/build-user-vars-plugin/)
- * boolean botUser (optional)
+<p>Params:
+<ul>
+ <li>String buildStatus (required)</li>
+ <li>String slackChannel (required)</li>
+ <li>String slackTeam (required)</li>
+ <li>String slackTokenCredentialId (required)</li>
+ <li>String buildUser (optional - taken from environment variables otherwise, requires "build user vars" Jenkins plugin installed in such case, i.e. <a href="https://plugins.jenkins.io/build-user-vars-plugin/">https://plugins.jenkins.io/build-user-vars-plugin/</a>)</li>
+ <li>boolean botUser (optional)</li>
+</ul>
+</p>
 
+<h4>Example usage</h4>
 
-Example usage:
-
-*Scripted Pipeline*
-
-```
-node{
+<h5>Scripted Pipeline</h5>
+<pre><code>
+node {
   // ...
 
   slackNotify(buildStatus: currentBuild.currentResult,
@@ -22,13 +23,12 @@ node{
                    slackTeam: "TEAM-NAME",
                    slackTokenCredentialId: "TOKEN-ID")
 }
-```
+</code></pre>
 
-or
+<br/><br/>
 
-*Declarative Pipeline*
-
-```
+<h5>Declarative Pipeline</h5>
+<pre><code>
 pipeline {
     agent any
 
@@ -48,4 +48,4 @@ pipeline {
         }
     }
 }
-```
+</code></pre>
