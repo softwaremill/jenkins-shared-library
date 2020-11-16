@@ -1,0 +1,51 @@
+*slackNotify* sends notifications to specified Slack channel.
+
+Params:
+ * String buildStatus (required)
+ * String slackChannel (required)
+ * String slackTeam (required)
+ * String slackTokenCredentialId (required)
+ * String buildUser (optional - taken from environment variables otherwise, requires "build user vars" Jenkins plugin installed in such case, i.e. https://plugins.jenkins.io/build-user-vars-plugin/)
+ * boolean botUser (optional)
+
+
+Example usage:
+
+*Scripted Pipeline*
+
+```
+node{
+  // ...
+
+  slackNotify(buildStatus: currentBuild.currentResult,
+                   slackChannel: "#CHANNEL-NAME",
+                   slackTeam: "TEAM-NAME",
+                   slackTokenCredentialId: "TOKEN-ID")
+}
+```
+
+or
+
+*Declarative Pipeline*
+
+```
+pipeline {
+    agent any
+
+    stages {
+        stage('Build something and notify via Slack..') {
+            steps {
+
+                // ...
+
+                script {
+                    slackNotify(buildStatus: currentBuild.currentResult,
+                        slackChannel: "#CHANNEL-NAME",
+                        slackTeam: "TEAM-NAME",
+                        slackTokenCredentialId: "TOKEN-ID")
+                }
+            }
+        }
+    }
+}
+```
